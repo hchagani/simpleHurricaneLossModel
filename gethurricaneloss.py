@@ -79,6 +79,18 @@ def gen_lognormal_samples(n, mean, stddev):
     return (np.random.lognormal(mean, stddev) for _ in range(n))
 
 
+def lognormal_to_normal(lognormal_mean, lognormal_stddev):
+    """lognormal_to_normal(lognormal_mean, lognormal_stddev)
+    Convert mean and standard deviation that describe LogNormal distribution to
+    mean and standard deviation of underlying normal distribution.
+    Returns mean and standard deviation of underlying normal distribution."""
+
+    normal_std = np.sqrt(np.log(1 + (lognormal_stddev/lognormal_mean)**2))
+    normal_mean = np.log(lognormal_mean) - normal_std**2 / 2
+
+    return normal_mean, normal_std
+
+
 def timer(fun):
     """timer(fun)
     Calculate and print run time of decorated function."""
@@ -115,6 +127,13 @@ def run_simulation(args):
     gulf_landfall_rate_model = gen_poisson_samples(args.n_samples,\
                                                    args.gulf_landfall_rate)
 
+    # Convert LogNormal distributions means and standard deviations to those of
+    # their underlying normal distributions
+    florida_normal_mean, florida_normal_stddev = lognormal_to_normal(args.florida_mean,\
+                                                                     args.florida_stddev)
+    gulf_normal_mean, gulf_normal_stddev = lognormal_to_normal(args.gulf_mean,\
+                                                               args.gulf_stddev)
+
     # Loop over simulation years
     for year in range(args.n_samples):
 
@@ -122,15 +141,17 @@ def run_simulation(args):
 
         # Determine total loss during current year in Florida
         n_florida_events = next(florida_landfall_rate_model)
-        florida_loss_model = gen_lognormal_samples(n_florida_events, args.florida_mean,\
-                                                   args.florida_stddev)
+        florida_loss_model = gen_lognormal_samples(n_florida_events,\
+                                                   florida_normal_mean,\
+                                                   florida_normal_stddev)
         for sample in florida_loss_model:
             simulation_loss += sample
 
         # Determine total loss during current year in Gulf states
         n_gulf_events = next(gulf_landfall_rate_model)
-        gulf_loss_model = gen_lognormal_samples(n_gulf_events, args.gulf_mean,\
-                                                args.gulf_stddev)
+        gulf_loss_model = gen_lognormal_samples(n_gulf_events,\
+                                                gulf_normal_mean,\
+                                                gulf_normal_stddev)
         for sample in gulf_loss_model:
             simulation_loss += sample
         
