@@ -2,6 +2,12 @@
 # return the expected annual economic loss.
 # v1.0
 # Hassan Chagani 2019-02-04
+# v1.1
+# Added conversion of mean and standard deviation that describe LogNormal
+# distribution to mean and standard deviation of underlying normal
+# distribution. Arguments to generate samples from LogNormal distributions
+# describing economic losses are now correct.
+# Hassan Chagani 2019-02-04
 
 import argparse
 import functools

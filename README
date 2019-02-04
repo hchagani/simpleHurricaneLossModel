@@ -129,3 +129,8 @@ integer.
 ---------------------
 v1.0
 First version.
+v1.1
+Added conversion of mean and standard deviation that describe LogNormal
+distribution to mean and standard deviation of underlying normal distribution.
+Arguments to generate samples from LogNormal distributions describing economic
+losses are now correct.
