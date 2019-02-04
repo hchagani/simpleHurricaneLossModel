@@ -1,0 +1,131 @@
+Financial Losses from Landfalling Hurricanes in Florida and The Gulf States
+===========================================================================
+Hassan Chagani
+v1.0 2019-02-04
+
+
+Contents
+--------
+[INT] Intoduction
+[REQ] Requirements
+[IIN] Installation Instructions
+[UIN] Usage Instructions
+[FLS] File List
+[VHI] Version History
+
+
+[INT] Introduction
+------------------
+This program imvokes a simple mathematical model of financial losses as a
+result of landfalling hurricanes in Florida and the Gulf states. The annual
+landfalling rates are modelled by Poisson distributions. The probability of
+economic loss as a result of landfalling hurricanes are described by LogNormal
+distributions.
+
+Model parameters and number of years to simulate are given as command line
+arguments. The program outputs run time and mean annual loss after execution.
+
+
+[REQ] Requirements
+------------------
+Tested with the Anaconda Python 3.6.8 distribution, with packages:
+
+argparse 1.1
+numpy 1.15.1
+
+Executable creation tested with nuitka 0.6.1.1
+
+
+[IIN] Installation Instructions
+-------------------------------
+Clone this repository from the command line:
+
+git clone https://github.com/hchagani/simpleHurricaneLossModel
+
+If an executable is desired, the following can be entered on the command line:
+
+python -m nuitka --follow-imports -o gethurricaneloss gethurricaneloss.py
+
+It may be necessary to install nuitka using the following:
+
+pip install nuitka
+
+
+[UIN] Usage Instructions
+------------------------
+The program can be run using either the python interpreter or as an executable
+after compilation as described above. To print the help message, --help or -h
+arguments should be given:
+
+
+usage: gethurricaneloss [-h] -n N_SAMPLES [-v]
+                        florida_landfall_rate florida_mean florida_stddev
+                        gulf_landfall_rate gulf_mean gulf_stddev
+
+Estimate mean financial loss per year as a result of landfalling hurricanes in
+Florida and the Gulf states.
+
+positional arguments:
+  florida_landfall_rate
+                        The annual rate of landfalling hurricanes in Florida
+  florida_mean          Mean of LogNormal distribution describing economic
+                        loss of a landfalling hurricane in Florida
+  florida_stddev        Standard deviation of LogNormal distribution
+                        describing economic loss of a landfalling hurricane in
+                        Florida
+  gulf_landfall_rate    The annual rate of landfalling hurricanes in the Gulf
+                        states
+  gulf_mean             Mean of LogNormal distribution describing economic
+                        loss of a landfalling hurricane in the Gulf states
+  gulf_stddev           Standard deviation of LogNormal distribution
+                        describing economic loss of a landfalling hurricane in
+                        the Gulf states
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         Print mean loss every 100,000 simulation years
+
+required named arguments:
+  -n N_SAMPLES, --num_monte_carlo_samples N_SAMPLES
+                        Number of samples (i.e. simulation years) to run
+
+
+Required arguments include the number of samples (i.e. simulation years) which
+must be prefixed by the option -n or --num_monte_carlo_samples. Without this
+prefix, the program will assume that positional arguments are being entered.
+The order of these arguments is important and given in the help message above.
+Examples of valid use is as follows:
+
+python gethurricaneloss -n 1000000 2 10000000 50000 4 30000000 100000
+
+or if compiled:
+
+./gethurricaneloss -n 1000000 2 10000000 50000 4 30000000 100000
+
+The above sets the number of simulated years to 1000000, the annual landfall
+rates in Florida and the Gulf states to 2 and 4 respectively, and the means
+and standard deviations for the LogNormal distributions that describe financial
+losses to 10,000,000 and 50,000 respectively in Florida and 30,000,000 and
+100,000 respectively in the Gulf states.
+
+An optional -v or --verbose argument can be issued to print out the mean loss
+every 100,000 years to check whether the program is still running. This does
+slow down execution time however.
+
+Error messages are displayed when invalid arguments are entered, including
+negative or zero values. Additionally, the number of samples must be an
+integer.
+
+
+[FLS] File List
+---------------
+1. gethurricaneloss.py
+	Source code.
+2. README
+	This file.
+
+
+[VHI] Version History
+---------------------
+v1.0
+First version.
